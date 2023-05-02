@@ -1,8 +1,14 @@
 import {$authHost, $host} from './index';
 import jwt_decode from 'jwt-decode';
+import axiosRetry from 'axios-retry';
+
+// axiosRetry($host, { retryCondition: () => {
+//     if ()
+// }});
+// axiosRetry($authHost, { retries: 3 });
 
 export const adminRegistartion = async(email, password, role) => {
-    const {data} = await $authHost.post('api/user/adminRegistartion', {email, password, role})
+    const {data} = await $authHost.post('api/user/adminregistartion', {email, password, role})
     return jwt_decode(data.token);
 } 
 
