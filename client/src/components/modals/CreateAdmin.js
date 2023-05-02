@@ -3,16 +3,18 @@ import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { adminRegistartion } from "../../http/userApi";
+import { userRoleType } from "../../utils/consts" 
 
-const CreateAdmin = ({ show, onHide }) => {
+const CreateAdmin = ({ show, showToast, onHide }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const addAdmin = async () => {
-    adminRegistartion(email, password, 'ADMIN').then((data) => {
+    adminRegistartion(email, password, userRoleType.admin).then((data) => {
       setEmail("");
       setPassword("");
       onHide();
+      showToast();
     });
   };
   return (

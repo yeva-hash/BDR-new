@@ -4,13 +4,14 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { createBrand } from "../../http/deviceApi";
 
-const CreateBrand = ({ show, onHide }) => {
+const CreateBrand = ({ show, showToast, onHide }) => {
   const [value, setValue] = useState("");
 
   const addBrand = () => {
     createBrand({ name: value }).then((data) => {
       setValue("");
       onHide();
+      showToast();
     });
   };
   return (

@@ -6,27 +6,23 @@ class DeviceModel {
         this.name = name;
         this.img = img;
         this.price = price;
-        this.description = description || null;//TODO
+        this.description = description;
         this.brandId = brandId;
         this.typeId = typeId;
         this.info = info;
     }
 
     async setBrandName() {
-        try {
-            const brand = await Brand.findOne(
-                { where: {id: this.brandId} }
-            );
+        const brand = await Brand.findOne(
+            { where: {id: this.brandId} }
+        );
 
-            this.brandName = brand.name;
-        } catch (error) {
-            var a = null;//TODO
-        }
+        this.brandName = brand.name;
     }
     
     static async createDeviceModel(values) {
         const deviceModel = new DeviceModel(values);
-        await deviceModel.setBrandName();
+        if (this.brandId) await deviceModel.setBrandName();
 
         return deviceModel;
     }

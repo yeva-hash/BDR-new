@@ -5,13 +5,13 @@ import { Context } from "..";
 
 const Pages = observer(() => {
   const { device } = useContext(Context);
+
   const pageCount = Math.ceil(device.totalCount / device.limit);
   const pages = [];
 
   for (let i = 0; i < pageCount; i++) {
     pages.push(i + 1);
   }
-  device.setLimit(2);//TODO
   return (
     <Pagination className="mt-3 ms-4">
       {pages.map((page) => (

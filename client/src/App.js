@@ -6,6 +6,7 @@ import { Context } from ".";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import { check } from "./http/userApi";
+import { userRoleType } from "./utils/consts" 
 
 const App = observer(() => {
   const {user} = useContext(Context);
@@ -15,7 +16,7 @@ const App = observer(() => {
     check().then(data => {
         user.setUser(true);
         user.setIsAuth(true);
-        if (data.role === 'ADMIN') {
+        if (data.role === userRoleType.admin) {
           user.setIsAdmin(true);
         }
     }).finally(() => setLoading(false))

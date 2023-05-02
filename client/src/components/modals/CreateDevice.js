@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Col, Container, Dropdown, Form, Row } from "react-bootstrap";
+import { Col, Dropdown, Form, Row } from "react-bootstrap";
 import { Context } from "../..";
 import Button from "react-bootstrap/Button";
 
@@ -7,7 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import { createDevice, getBrands, getTypes } from "../../http/deviceApi";
 import { observer } from "mobx-react-lite";
 
-const CreateDevice = observer(({ show, onHide }) => {
+const CreateDevice = observer(({ show, showToast, onHide }) => {
   const { device } = useContext(Context);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const CreateDevice = observer(({ show, onHide }) => {
   const [info, setInfo] = useState([]);
 
   const addInfo = () => {
-    setInfo([...info, { title: "", description: "", number: Date.now() }]); //TODO RANDOM
+    setInfo([...info, { title: "", description: "", number: Math.random() * 100 }]);
   };
   const removeInfo = (number) => {
     setInfo(info.filter((i) => i.number !== number));
@@ -46,7 +46,10 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append("brandId", device.selectedBrand.id)
     formData.append("typeId", device.selectedType.id)
     formData.append("info", JSON.stringify(info))
-    createDevice(formData).then(data => onHide())
+    createDevice(formData).then((data) => {
+      onHide();
+      showToast();
+    })
   };
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
@@ -60,7 +63,7 @@ const CreateDevice = observer(({ show, onHide }) => {
           <div className="d-flex justify-content-start">
             <Dropdown className="mt-3">
               <Dropdown.Toggle variant={"outline-dark"} className="me-3">
-                {device.selectedType.name || "Select the type"}
+                {device.selectedType.id && device.selectedType.id !== 0 ? device.selectedType.name : "Select the type"}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 {device.types.map((type) => (
@@ -77,21 +80,22 @@ const CreateDevice = observer(({ show, onHide }) => {
             </Dropdown>
             <Dropdown className="mt-3">
               <Dropdown.Toggle variant={"outline-dark"}>
-                {device.selectedBrand.name || "Select the brand"}
+                {device.selectedBrand.id && device.selectedBrand.id !== 0 ? device.selectedBrand.name : "Select the brand"}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 {device.brands.map((brand) => (
+                  brand.id !== 0 ?  
                   <Dropdown.Item
                     onClick={() => device.setSelectedBrand(brand)}
                     key={brand.id}
                   >
                     {brand.name}
                   </Dropdown.Item>
+                  : ''
                 ))}
               </Dropdown.Menu>
             </Dropdown>
           </div>
-          {/* TODO STYLE IT */}
           <Form.Control
             className="mt-3"
             placeholder={"Enter the name of the device"}

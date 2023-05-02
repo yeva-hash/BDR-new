@@ -25,7 +25,7 @@ const NavBar = observer(() => {
           <Navbar.Brand href={SHOP_ROUTE}>SoftComp</Navbar.Brand>
           {user.isAuth ? 
             <Nav className="ml-auto" style={{color: 'white'}}>
-                <Button variant={"outline-light"} onClick={() => navigate(ADMIN_ROUTE)}>Admin Panel</Button>
+                {user.isAdmin ? <Button variant={"outline-light"} onClick={() => navigate(ADMIN_ROUTE)}>Admin Panel</Button> : ''}
                 <Button variant={"outline-light"} onClick={() => logOut()} className="ms-2">Log Out</Button>
             </Nav>
             :

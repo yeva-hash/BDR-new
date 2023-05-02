@@ -5,13 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import { Context } from '..';
 import { getTypes } from '../http/deviceApi';
 import { SHOP_ROUTE } from '../utils/consts';
+import { setInitialValue } from '../utils/setInitialValue';
 
 const TypeBar = observer(() => {
     const {device} = useContext(Context);
     const navigate = useNavigate();
 
     useEffect(() => {
-        getTypes().then(data => device.setTypes(data));// TODO
+        getTypes().then((data) => {
+            device.setTypes(data);
+            setInitialValue(device, device.types, device.setSelectedType);
+        });
     }, [device])
 
     const showShopPage = (type) => {

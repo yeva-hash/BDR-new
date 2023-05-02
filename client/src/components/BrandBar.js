@@ -1,11 +1,21 @@
 import {observer} from 'mobx-react-lite';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Card } from 'react-bootstrap';
 import { Form } from 'react-bootstrap'
 import { Context } from '..';
+import { getBrands } from '../http/deviceApi';
+import { setInitialValue } from '../utils/setInitialValue';
 
 const BrandBar = observer(() => {
     const {device} = useContext(Context);
+
+    useEffect(() => {
+        getBrands().then((data) => {
+            device.setBrands(data);
+            setInitialValue(device, device.brands, device.setSelectedBrand);
+        });
+    }, [device])
+
     return (
         <Form className="d-flex flex-wrap">
             {device.brands.map(brand => 

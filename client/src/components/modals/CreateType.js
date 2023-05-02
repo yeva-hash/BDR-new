@@ -4,12 +4,13 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { createType } from "../../http/deviceApi";
 
-const CreateType = ({ show, onHide }) => {
-  const [value, setValue] = useState(""); //TODO REFACTOR
+const CreateType = ({ show, showToast, onHide }) => {
+  const [value, setValue] = useState("");
   const addType = () => {
     createType({ name: value }).then((data) => {
       setValue("");
       onHide();
+      showToast();
     });
   };
   return (

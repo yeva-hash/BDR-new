@@ -13,7 +13,7 @@ export default class UserStore {
     }
 
     setUser(user) {
-        this._isAuth = user;
+        this._user = user;
     }
 
     setIsAdmin(bool) {
@@ -27,7 +27,7 @@ export default class UserStore {
         return this._user;
     }
 
-    get admin() {
+    get isAdmin() {
         return this._isAdmin;
     }
 }
