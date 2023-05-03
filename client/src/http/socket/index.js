@@ -1,8 +1,16 @@
 import io from 'socket.io-client'
 
 export default class SocketClient {
-    init() {
+    static socket;
+    static init() {
         this.socket = io.connect('http://localhost:8080');
-        this.socket.emit('connected', 'user');
+    }
+
+    static emitEvent(name, args) {
+        this.socket.emit(name, args);
+    }
+
+    static onEvent(name, callback) {
+        socket.on(name, () => callback());
     }
 }

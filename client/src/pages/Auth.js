@@ -8,6 +8,8 @@ import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE, userRoleType } from '../ut
 
 const Auth = observer(() => {
     const {user} = useContext(Context);
+    const {SocketClient} = useContext(Context);
+
     const location = useLocation();
     const navigate = useNavigate();
     const isLogin = location.pathname === LOGIN_ROUTE ? true : false;
@@ -20,7 +22,10 @@ const Auth = observer(() => {
             user.setUser(userData);
             user.setIsAuth(true);
 
-            if (userData.role === userRoleType.admin) user.setIsAdmin(true);
+            if (userData.role === userRoleType.admin) {
+                user.setIsAdmin(true)
+                SocketClient.emitEvent('adminJoin');
+            };
 
             navigate(SHOP_ROUTE);
         } catch (error) {

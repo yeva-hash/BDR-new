@@ -10,20 +10,21 @@ import { userRoleType } from "./utils/consts"
 
 const App = observer(() => {
   const {user} = useContext(Context);
-  const {socket} = useContext(Context);
+  const {SocketClient} = useContext(Context);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    SocketClient.init();
+
     check().then(data => {
-        // user.setUser(true);
+        user.setUser(data);
         user.setIsAuth(true);
         if (data.role === userRoleType.admin) {
           user.setIsAdmin(true);
+          SocketClient.emitEvent('adminJoin');
         }
     }).finally(() => setLoading(false));
-
-    socket.init();
   },[user])
 
   if (loading) {

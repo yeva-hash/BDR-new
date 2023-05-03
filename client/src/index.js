@@ -12,7 +12,7 @@ root.render(
     <Context.Provider value={{
       user: new UserStore(),
       device: new DeviceStore(),
-      socket: new SocketClient()
+      SocketClient: SocketClient
     }}>
       <App />
     </Context.Provider>,

@@ -6,16 +6,17 @@ import { Context } from "../..";
 
 const OpenChat = ({ show, onHide }) => {
   const {user} = useContext(Context);
+  const {SocketClient} = useContext(Context);
   const [showChat, setShowChat] = useState(user.isAdmin ? true : false);
-  // const [password, setPassword] = useState("");
 
-  // const addAdmin = async () => {
-  //   adminRegistartion(email, password, 'ADMIN').then((data) => {
-  //     setEmail("");
-  //     setPassword("");
-  //     onHide();
-  //   });
-  // };
+  const createRoom = () => {
+    setShowChat(true);
+
+    const {userData} = user;
+    const roomId = Object.keys(userData) > 0 ? userData.email : `anonymous ${new Date().getTime()}`
+
+    SocketClient.socket.emit('createRoom', roomId);
+  }
 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered aria-labelledby="contained-modal-title-vcenter">
@@ -28,7 +29,7 @@ const OpenChat = ({ show, onHide }) => {
           {showChat ?
             <Chat />
           :
-          <Button onClick={() => setShowChat(true)} >Connect with support</Button>
+          <Button onClick={createRoom} >Connect with support</Button>
         }
     </Modal.Body>
     <Modal.Footer>

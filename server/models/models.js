@@ -45,6 +45,12 @@ const DeviceInfo = sequelize.define('device_info', {
     description: {type: DataTypes.STRING, allowNull: false}
 })
 
+const SocketRoom = sequelize.define('socket_room', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    user_id: {type: DataTypes.STRING, allowNull: false},
+    messages: {type: DataTypes.STRING, allowNull: true}
+})
+
 User.hasOne(Basket);
 Basket.belongsTo(User);
 
@@ -74,5 +80,6 @@ module.exports = {
     Type,
     Brand,
     TypeBrand,
-    DeviceInfo
+    DeviceInfo,
+    SocketRoom
 }
