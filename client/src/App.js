@@ -6,20 +6,24 @@ import { Context } from ".";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import { check } from "./http/userApi";
-import { userRoleType } from "./utils/consts" 
+import { userRoleType } from "./utils/consts"
 
 const App = observer(() => {
   const {user} = useContext(Context);
+  const {socket} = useContext(Context);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     check().then(data => {
-        user.setUser(true);
+        // user.setUser(true);
         user.setIsAuth(true);
         if (data.role === userRoleType.admin) {
           user.setIsAdmin(true);
         }
-    }).finally(() => setLoading(false))
+    }).finally(() => setLoading(false));
+
+    socket.init();
   },[user])
 
   if (loading) {

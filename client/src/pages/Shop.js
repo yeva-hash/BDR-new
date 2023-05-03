@@ -25,7 +25,7 @@ const Shop = observer(() => {
         }
         fetchData();
     }, [device, device.page, device.selectedType, device.selectedBrand])
-
+    
     return (
       <Container>
             <Row className="mt-4">

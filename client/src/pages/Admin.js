@@ -6,6 +6,7 @@ import CreateBrand from "../components/modals/CreateBrand";
 import CreateDevice from "../components/modals/CreateDevice";
 import CreateType from "../components/modals/CreateType";
 import ChangeSitePrefs from "../components/modals/ChangeSitePrefs";
+import OpenChat from "../components/modals/OpenChat";
 import Toasts from "../components/Toasts";
 
 const Admin = observer(() => {
@@ -14,11 +15,20 @@ const Admin = observer(() => {
   const [deviceVisible, setDeviceVisible] = useState(false);
   const [adminVisible, setAdminVisible] = useState(false);
   const [prefsVisible, setPrefsVisible] = useState(false);
+  const [chatVisible, setChatVisible] = useState(false);
 
   const [toastVisible, setToastVisible] = useState(false);
 
   return (
     <Container className="d-flex flex-column">
+      <Button
+        onClick={() => setChatVisible(true)}
+        variant={"outline-dark"}
+        className="mt-4 p-2"
+      >
+        Chat
+      </Button>
+
       <Button
         onClick={() => setTypeVisible(true)}
         variant={"outline-dark"}
@@ -62,6 +72,7 @@ const Admin = observer(() => {
       <CreateDevice show={deviceVisible} showToast={() => setToastVisible(true)} onHide={() => setDeviceVisible(false)} />
       <CreateAdmin show={adminVisible} showToast={() => setToastVisible(true)}  onHide={() => setAdminVisible(false)} />
       <ChangeSitePrefs show={prefsVisible} showToast={() => setToastVisible(true)}  onHide={() => setPrefsVisible(false)} />
+      <OpenChat show={chatVisible} onHide={() => setChatVisible(false)} />
 
       <Toasts show={toastVisible} onHide={() => setToastVisible(false)} />
     </Container>

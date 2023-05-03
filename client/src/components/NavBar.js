@@ -1,14 +1,17 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Context } from "..";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from "../utils/consts";
+import OpenChat from "../components/modals/OpenChat";
 import {observer} from 'mobx-react-lite';
 import { useNavigate } from "react-router-dom"
 
 const NavBar = observer(() => {
+    const [chatVisible, setChatVisible] = useState(false);
+
     const {user} = useContext(Context);
     const navigate = useNavigate();
 
@@ -23,9 +26,14 @@ const NavBar = observer(() => {
       <Navbar bg="dark" variant="dark">
         <Container>
           <Navbar.Brand href={SHOP_ROUTE}>SoftComp</Navbar.Brand>
+          {user.isAdmin ?
+            <Button variant={"outline-light"} onClick={() => {navigate(ADMIN_ROUTE)}} className="ms-2">Admin Panel</Button>
+            :
+            <Button variant={"outline-light"} onClick={() => setChatVisible(true)}>Chat</Button>
+          }
+          
           {user.isAuth ? 
-            <Nav className="ml-auto" style={{color: 'white'}}>
-                {user.isAdmin ? <Button variant={"outline-light"} onClick={() => navigate(ADMIN_ROUTE)}>Admin Panel</Button> : ''}
+            <Nav className="ml-auto" style={{color: 'white'}}>        
                 <Button variant={"outline-light"} onClick={() => logOut()} className="ms-2">Log Out</Button>
             </Nav>
             :
@@ -33,6 +41,7 @@ const NavBar = observer(() => {
                 <Button variant={"outline-light"} onClick={() => {navigate(LOGIN_ROUTE)}}>Authorization</Button>
             </Nav>
             }
+            <OpenChat show={chatVisible} onHide={() => setChatVisible(false)} />
         </Container>
       </Navbar>
     );
