@@ -3,7 +3,7 @@ const app = require('../index');
 const { SocketRoom } = require('./components/rooms');
 
 class Socket {
-    static rooms;
+    static rooms = [];
     static init() {
         const server = require('http').Server(app); 
         this.io = new Server(server, {
@@ -16,6 +16,10 @@ class Socket {
     static handleEvents() {
         this.io.on("connection", (socket) => {
             console.log('user connected')
+
+            socket.on('initGetRooms', () => {
+                socket.emit('getRooms', this.rooms);
+            })
 
             socket.on('adminJoin', () => {
                 this.rooms.forEach(room => {

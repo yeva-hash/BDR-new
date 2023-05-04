@@ -1,9 +1,10 @@
 'use strict'
 
 class SocketRoom {
-    constructor() {
+    constructor(id, name) {
         this.id = id;
+        this.name = name;
     }
 }
 
-module.exports = SocketRoom;
+module.exports.SocketRoom = SocketRoom;
