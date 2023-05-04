@@ -13,4 +13,8 @@ export default class SocketClient {
     static onEvent(name, callback) {
         this.socket.on(name, (args) => callback(args));
     }
+
+    static disconnect() {
+        this.socket.disconnect();
+    }
 }

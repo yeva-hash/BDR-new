@@ -1,13 +1,20 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Chat from "../Chat";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from "../..";
+import SocketRoom from "../../http/socket/components/clientRooms";
 
 const OpenChat = ({ show, onHide }) => {
   const {user} = useContext(Context);
   const {SocketClient} = useContext(Context);
-  const [showChat, setShowChat] = useState(user.isAdmin ? true : false);
+
+  const [clientRoom, setClientRoom] = useState(localStorage.getItem("chatRoom") ? JSON.parse(localStorage.getItem("chatRoom")) : []);
+  const [showChat, setShowChat] = useState(user.isAdmin || clientRoom.length > 0 ? true : false);
+
+  useEffect(() => {
+    localStorage.setItem("chatRoom", JSON.stringify(clientRoom));
+  }, [user, clientRoom]);
 
   const createRoom = () => {
     setShowChat(true);
@@ -15,7 +22,8 @@ const OpenChat = ({ show, onHide }) => {
     const {userData} = user;
     const roomId = Object.keys(userData) > 0 ? userData.email : `anonymous ${new Date().getTime()}`
 
-    SocketClient.socket.emit('createRoom', roomId);
+    SocketClient.socket.emit('createRoom', new SocketRoom(roomId));
+    setClientRoom([new SocketRoom(roomId)]);
   }
 
   return (
@@ -27,7 +35,7 @@ const OpenChat = ({ show, onHide }) => {
     </Modal.Header>
     <Modal.Body className="show-grid">
           {showChat ?
-            <Chat />
+            <Chat clientRoom={clientRoom} />
           :
           <Button onClick={createRoom} >Connect with support</Button>
         }

@@ -7,10 +7,11 @@ import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import { check } from "./http/userApi";
 import { userRoleType } from "./utils/consts"
+import { Beforeunload } from 'react-beforeunload'; // импортируем компонент
 
 const App = observer(() => {
-  const {user} = useContext(Context);
-  const {SocketClient} = useContext(Context);
+  const { user } = useContext(Context);
+  const { SocketClient } = useContext(Context);
 
   const [loading, setLoading] = useState(true);
 
@@ -18,23 +19,38 @@ const App = observer(() => {
     SocketClient.init();
 
     check().then(data => {
-        user.setUser(data);
-        user.setIsAuth(true);
-        if (data.role === userRoleType.admin) {
-          user.setIsAdmin(true);
-          SocketClient.emitEvent('adminJoin');
-        }
+      user.setUser(data);
+      user.setIsAuth(true);
+      if (data.role === userRoleType.admin) {
+        user.setIsAdmin(true);
+        SocketClient.emitEvent('adminJoin');
+      }
     }).finally(() => setLoading(false));
-  },[user])
 
-  if (loading) {
-    return <Spinner animation="grow"/>
-  }
+    return () => {
+      SocketClient.disconnect();
+    };
+  }, [user, SocketClient])
+
   return (
-    <BrowserRouter>
-        <NavBar/>
-        <AppRouter />
-    </BrowserRouter>
+    <Beforeunload onBeforeunload={(event) => {
+      if (event.target.activeElement.href) return;
+
+      const socketRoom = localStorage.getItem("chatRoom") ? JSON.parse(localStorage.getItem("chatRoom")) : [];
+      if (socketRoom.length > 0) {
+        SocketClient.emitEvent('user-disconnected', socketRoom[0]);
+        localStorage.setItem("chatRoom", JSON.stringify([]));
+      }
+
+    }}>
+      <BrowserRouter>
+        <NavBar />
+        {loading ?
+          <Spinner animation="grow" /> :
+          <AppRouter />
+        }
+      </BrowserRouter>
+    </Beforeunload>
   );
 })
 

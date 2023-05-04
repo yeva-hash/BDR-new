@@ -1,6 +1,5 @@
 const {Server} = require('socket.io')
 const app = require('../index');
-const { SocketRoom } = require('./components/rooms');
 
 class Socket {
     static rooms = [];
@@ -29,11 +28,22 @@ class Socket {
                 });
             })
             
-            socket.on('createRoom', (roomId) => {
-                socket.join(roomId);
-                this.rooms.push(new SocketRoom(roomId)); 
+            socket.on('createRoom', (room) => {
+                socket.join(room.id);
+                this.rooms.push(room);
 
-                console.log(`new room created with id: ${roomId}`)
+                console.log(`new room created with id: ${room}`)
+            });
+
+            socket.on('sendMessage', (messageData) => {
+                    
+            })
+
+            socket.on('user-disconnected', (room) => {
+                socket.leave(room.id);
+                this.rooms = this.rooms.filter(r => r.id !== room.id);
+
+                console.log(`user leave room with id: ${room.id}`)
             });
         });
     }
