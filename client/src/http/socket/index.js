@@ -11,6 +11,6 @@ export default class SocketClient {
     }
 
     static onEvent(name, callback) {
-        socket.on(name, () => callback());
+        this.socket.on(name, (args) => callback(args));
     }
 }
