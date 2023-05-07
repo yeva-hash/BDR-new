@@ -12,6 +12,10 @@ class Socket {
         this.handleEvents();
     }
 
+    static sendMessagesContent(messageData) {
+        this.io.emit('receiveMessage', messageData);
+    }
+
     static handleEvents() {
         this.io.on("connection", (socket) => {
             console.log('user connected')
@@ -35,8 +39,20 @@ class Socket {
                 console.log(`new room created with id: ${room}`)
             });
 
-            socket.on('sendMessage', (messageData) => {
-                    
+            socket.on('sendMessage', (data) => {
+                const {room, message} = data;
+
+                const roomIndex = this.rooms.findIndex(r => r.id === room.id);
+                this.rooms[roomIndex].messageData.push(message);
+
+                this.sendMessagesContent(this.rooms[roomIndex].messageData);
+            })
+
+            socket.on('getMessages', (room) => {
+                const currentRoom = this.rooms.find(r => {
+                    return r.id === room.id;
+                })
+                this.sendMessagesContent(currentRoom.messageData);
             })
 
             socket.on('user-disconnected', (room) => {

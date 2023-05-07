@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Chat from "../Chat";
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../..";
-import SocketRoom from "../../http/socket/components/clientRooms";
+import { SocketRoom } from "../../http/socket/components/rooms";
 
 const OpenChat = ({ show, onHide }) => {
   const {user} = useContext(Context);
