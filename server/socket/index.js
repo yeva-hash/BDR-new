@@ -12,8 +12,8 @@ class Socket {
         this.handleEvents();
     }
 
-    static sendMessagesContent(messageData) {
-        this.io.emit('receiveMessage', messageData);
+    static sendMessagesContent(room) {
+        this.io.emit('receiveMessage', room);
     }
 
     static handleEvents() {
@@ -31,7 +31,12 @@ class Socket {
                     console.log(`admin connected to: ${room.id}`);
                 });
             })
-            
+
+            socket.on('updateBadge', (room) => {
+                const roomIndex = this.rooms.findIndex(r => r.id === room.id);
+                this.rooms.splice(roomIndex, 1, room);
+            });
+
             socket.on('createRoom', (room) => {
                 socket.join(room.id);
                 this.rooms.push(room);
@@ -45,14 +50,14 @@ class Socket {
                 const roomIndex = this.rooms.findIndex(r => r.id === room.id);
                 this.rooms[roomIndex].messageData.push(message);
 
-                this.sendMessagesContent(this.rooms[roomIndex].messageData);
+                this.sendMessagesContent(this.rooms[roomIndex]);
             })
 
             socket.on('getMessages', (room) => {
                 const currentRoom = this.rooms.find(r => {
                     return r.id === room.id;
                 })
-                this.sendMessagesContent(currentRoom.messageData);
+                this.sendMessagesContent(currentRoom);
             })
 
             socket.on('user-disconnected', (room) => {

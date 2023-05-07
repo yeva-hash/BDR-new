@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Col, Container, Form, ListGroup, Row } from "react-bootstrap";
+import { Badge, Button, Col, Container, Form, ListGroup, Row } from "react-bootstrap";
 import SocketClient from "../http/socket/index";
 import { Context } from "..";
 import { SocketMessage, SocketRoom } from "../http/socket/components/rooms";
@@ -11,15 +11,19 @@ const Chat = ({clientRoom}) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([])
 
-  SocketClient.onEvent('receiveMessage', (messageData) => {
-    setMessages(messageData);
+  SocketClient.onEvent('receiveMessage', (room) => {
+    if (user.isAdmin || (clientRoom.length > 0 && clientRoom[0].id === room.id)) {
+      setMessages(room.messageData);
+      room.isBadge = true;
+      SocketClient.emitEvent('updateBadge', room);
+    }
   })
 
   const sendMessage = () => {
     setMessage('');
 
     const room = user.isAdmin ? SocketRoom.selectedRoom : clientRoom[0];
-    const messageObject = new SocketMessage(message);
+    const messageObject = new SocketMessage(message, user.isAdmin ? true : false);
 
     SocketClient.emitEvent('sendMessage', {
       room: room,
@@ -29,6 +33,9 @@ const Chat = ({clientRoom}) => {
 
   const showRoomContent = (room) => {
     SocketRoom.setSelectedRoom(room);
+    room.isBadge = false;
+
+    SocketClient.emitEvent('updateBadge', room);
     SocketClient.emitEvent('getMessages', room);
   }
 
@@ -39,6 +46,9 @@ const Chat = ({clientRoom}) => {
       SocketClient.onEvent('getRooms', (socketRooms) => {
         setRooms(socketRooms);
       })
+      SocketRoom.setSelectedRoom({});
+    } else {
+      SocketClient.emitEvent('getMessages', clientRoom[0]);
     }
   },[user])
 
@@ -58,12 +68,12 @@ const Chat = ({clientRoom}) => {
                           key={room.id}
                       >
                           {room.id}
+                          {room.isBadge ? <Badge bg="secondary">New</Badge> : ''}
                       </ListGroup.Item>
                   )}
               </ListGroup>
           </Col> 
         : ''}
-        {/* {!user.isAdmin || Object.keys(SocketRoom.selectedRoom).length > 0 ?  */}
           <Col md={9}>
           {!user.isAdmin || Object.keys(SocketRoom.selectedRoom).length > 0 ? 
           <Container style={{ height: '500px' }} className="d-flex flex-column" >
@@ -71,10 +81,11 @@ const Chat = ({clientRoom}) => {
               <Form.Control
                 className="mt-3"
                 variant={"outline-dark"}
-                value={m.message}
+                value={(m.isAdmin ? 'admin: ' : 'user: ') + m.message}
                 key={m.createdAt}
-              />
-            )}
+              >
+              </Form.Control>
+            )} 
             <Form className="mt-auto d-flex">
               <Form.Control
                 className="me-1"

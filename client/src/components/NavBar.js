@@ -8,6 +8,8 @@ import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from "../utils/consts";
 import OpenChat from "../components/modals/OpenChat";
 import {observer} from 'mobx-react-lite';
 import { useNavigate } from "react-router-dom"
+import AppState from "./AppState";
+import { Badge } from "react-bootstrap";
 
 const NavBar = observer(() => {
     const [chatVisible, setChatVisible] = useState(false);
@@ -29,7 +31,7 @@ const NavBar = observer(() => {
           {user.isAdmin ?
             <Button variant={"outline-light"} onClick={() => {navigate(ADMIN_ROUTE)}} className="ms-2">Admin Panel</Button>
             :
-            <Button variant={"outline-light"} onClick={() => setChatVisible(true)}>Chat</Button>
+             <Button variant={"outline-light"} onClick={() => setChatVisible(true)}>Chat</Button>
           }
           
           {user.isAuth ? 

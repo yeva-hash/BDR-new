@@ -1,6 +1,7 @@
 class SocketMessage {
-    constructor(message) {
+    constructor(message, isAdmin) {
         this.message = message;
+        this.isAdmin = isAdmin;
         this.createdAt = new Date();
     }
     static sortMessages(a, b) {
@@ -13,6 +14,7 @@ class SocketRoom {
     constructor(id) {
         this.id = id;
         this.messageData = [];
+        this.isBadge = true;
     }
 
     static setSelectedRoom(room) {
