@@ -4,12 +4,13 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
-import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from "../utils/consts";
+import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, BASKET_ROUTE } from "../utils/consts";
 import OpenChat from "../components/modals/OpenChat";
 import {observer} from 'mobx-react-lite';
 import { useNavigate } from "react-router-dom"
 import AppState from "./AppState";
 import { Badge } from "react-bootstrap";
+import BasketPage from "../pages/BasketPage";
 
 const NavBar = observer(() => {
     const [chatVisible, setChatVisible] = useState(false);
@@ -33,9 +34,10 @@ const NavBar = observer(() => {
             :
              <Button variant={"outline-light"} onClick={() => setChatVisible(true)}>Chat</Button>
           }
-          
           {user.isAuth ? 
-            <Nav className="ml-auto" style={{color: 'white'}}>        
+          
+            <Nav className="ml-auto" style={{color: 'white'}}>
+                <Button variant={"outline-light"} onClick={() => navigate(BASKET_ROUTE)}>Basket</Button>        
                 <Button variant={"outline-light"} onClick={() => logOut()} className="ms-2">Log Out</Button>
             </Nav>
             :

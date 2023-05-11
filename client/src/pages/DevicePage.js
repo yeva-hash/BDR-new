@@ -1,13 +1,25 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import TypeBar from "../components/TypeBar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getOneDevice } from "../http/deviceApi";
+import { addToCart } from "../http/basketApi";
+import { Context } from "..";
+import { LOGIN_ROUTE } from "../utils/consts";
 
 function DevicePage() {
+  const {user} = useContext(Context);
+  const navigate = useNavigate();
+
   const [device, setDevice] = useState({ info: [] });
   const { id } = useParams();
 
+  const addItemToCart = () => {
+    if (!user.isAuth) {
+      return navigate(LOGIN_ROUTE)
+    }
+    addToCart(user.userData, device);
+  }
   useEffect(() => {
     getOneDevice(id).then((data) => setDevice(data));
   }, []);
@@ -71,8 +83,11 @@ function DevicePage() {
             }
           </div>
 
-          <Button className="w-100 mt-3" variant={"outline-dark"}>
-            ADD TO CART
+          <Button   
+            className="w-100 mt-3" 
+            variant={"outline-dark"}
+            onClick={addItemToCart}>
+              ADD TO CART
           </Button>
         </Col>
       </Row>

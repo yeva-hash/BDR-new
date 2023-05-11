@@ -8,8 +8,8 @@ const ApiError = require('../error/ApiError');
 class DeviceController {
     async create(req, res, next) {
         try {
-        let {name, price, description, brandId, typeId, info} = req.body;
-        const {img} = req.files;
+            let {name, price, description, brandId, typeId, info} = req.body;
+            const {img} = req.files;
             let fileName = uuid.v4() + ".jpg";
             img.mv(path.resolve(__dirname, '..', 'static', fileName));
 
@@ -33,7 +33,7 @@ class DeviceController {
     }
 
     async getAll(req, res, next) {
-        try {//TODO refactor?
+        try {
             let devices = [];
 
             let {brandId, typeId, limit, page} = req.query;
@@ -57,7 +57,7 @@ class DeviceController {
             const deviceListModel = new DeviceListModel(devices.count);
 
             for (const device of devices.rows) {
-                const deviceModel = await DeviceModel.createDeviceModel(device.dataValues);
+                const deviceModel = await DeviceModel.createDeviceModel(device.dataValues, 'device');
                 deviceListModel.setDevice(deviceModel);
             }
             
@@ -77,7 +77,7 @@ class DeviceController {
             }
         )
 
-        const deviceModel = await DeviceModel.createDeviceModel(device.dataValues);
+        const deviceModel = await DeviceModel.createDeviceModel(device.dataValues, 'device');
         return res.json(deviceModel);
     }
 }

@@ -18,7 +18,6 @@ const DeviceItem = ({device}) => {
                     <div>{device.brandName}</div>
                 </div>
                 <div>{device.name}</div>
-                {/* Add to cart */}
             </Card>
         </Col>   
     );
