@@ -6,11 +6,13 @@ import { getOneDevice } from "../http/deviceApi";
 import { addToCart } from "../http/basketApi";
 import { Context } from "..";
 import { LOGIN_ROUTE } from "../utils/consts";
+import Toasts from "../components/Toasts";
 
 function DevicePage() {
   const {user} = useContext(Context);
   const navigate = useNavigate();
 
+  const [toastVisible, setToastVisible] = useState(false);
   const [device, setDevice] = useState({ info: [] });
   const { id } = useParams();
 
@@ -18,7 +20,9 @@ function DevicePage() {
     if (!user.isAuth) {
       return navigate(LOGIN_ROUTE)
     }
-    addToCart(user.userData, device);
+    addToCart(user.userData, device).then(() => {
+      setToastVisible(true);
+    });
   }
   useEffect(() => {
     getOneDevice(id).then((data) => setDevice(data));
@@ -91,6 +95,8 @@ function DevicePage() {
           </Button>
         </Col>
       </Row>
+
+      <Toasts show={toastVisible} onHide={() => setToastVisible(false)} />
     </Container>
   );
 }
